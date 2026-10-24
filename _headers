@@ -1,0 +1,12 @@
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+
+/index.html
+  Cache-Control: no-cache
+
+/js/*.js
+  Cache-Control: public, max-age=86400
+
+/css/*.css
+  Cache-Control: public, max-age=86400

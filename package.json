@@ -1,0 +1,12 @@
+{
+  "name": "ai-life-archive",
+  "description": "Local-first life archive with AI reflection, built with vanilla JavaScript and Cloudflare Pages Functions.",
+  "private": true,
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "npx wrangler pages dev . --project-name ai-life-archive",
+    "check": "node --check js/app.js && node --check functions/_shared/ai-core.js && node --check functions/api/ai.js && node --check netlify/functions/ai.js"
+  }
+}

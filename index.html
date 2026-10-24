@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#523018">
+  <meta name="color-scheme" content="light">
+  <title>AI 人生档案馆</title>
+  <link rel="stylesheet" href="css/style.css?v=20261024a">
+</head>
+<body>
+
+  <div id="app">
+
+    <!-- ============ 大门 ============ -->
+    <section class="screen active" id="screen-door" data-title="大门">
+      <div class="door-scene" id="door-scene">
+        <div class="door-glow"></div>
+        <div class="door-light"></div>
+        <div class="door-panel door-left"></div>
+        <div class="door-panel door-right"></div>
+        <div class="door-plaque">
+          <p class="plaque-small">EST. 2026 · 个人成长档案馆</p>
+          <h1>AI 人生档案馆</h1>
+          <p class="plaque-sub">记录每一个人生片段，让 AI 为你解读成长的轨迹</p>
+          <button class="btn-door" id="btn-enter" type="button">推开档案馆的大门</button>
+        </div>
+      </div>
+
+      <div class="warp-overlay" id="warp-overlay" aria-hidden="true">
+        <div class="warp-tunnel">
+          <div class="warp-ring r1"></div>
+          <div class="warp-ring r2"></div>
+          <div class="warp-ring r3"></div>
+          <div class="warp-ring r4"></div>
+          <div class="warp-ring r5"></div>
+        </div>
+        <div class="warp-core"></div>
+        <div class="warp-dust-layer"></div>
+        <div class="warp-awake"></div>
+      </div>
+    </section>
+
+    <!-- ============ 档案室 ============ -->
+    <section class="screen" id="screen-archive" data-title="档案室">
+      <header class="screen-header">
+        <button class="btn-back" data-back="screen-door" type="button">← 大门</button>
+        <h2>档案室</h2>
+        <div class="header-actions">
+          <button class="btn-ghost" id="btn-link-archive" type="button">时空连线</button>
+          <button class="btn-ghost" id="btn-vault" type="button">时间胶囊</button>
+          <button class="btn-ghost" id="btn-data" type="button">数据</button>
+        </div>
+      </header>
+
+      <div class="archive-stats" id="archive-stats"></div>
+      <div class="timeline-entry-wrap">
+        <button class="timeline-entry" id="btn-all-timeline" type="button">
+          <span class="te-icon">◈</span>
+          <span class="te-text"><b>全部时间轴</b><small>把每一段记忆串成一条完整的时间线</small></span>
+          <span class="te-arrow">→</span>
+        </button>
+      </div>
+      <div class="year-grid" id="year-grid"></div>
+
+      <button class="btn-primary fab" id="btn-new-moment" type="button">＋ 记录此刻</button>
+    </section>
+
+    <!-- ============ 全部时间轴 ============ -->
+    <section class="screen" id="screen-all-timeline" data-title="全部时间轴">
+      <header class="screen-header">
+        <button class="btn-back" data-back="screen-archive" type="button">← 档案室</button>
+        <h2 id="all-timeline-title">全部时间轴</h2>
+        <div class="header-actions">
+          <button class="btn-ghost" id="btn-new-moment-all" type="button">＋ 记录</button>
+        </div>
+      </header>
+      <div class="tz-v" id="tz-v">
+        <svg class="tz-svg" id="tz-svg"></svg>
+        <div class="tz-nodes" id="tz-nodes"></div>
+      </div>
+    </section>
+
+    <!-- ============ 时间轴（年份） ============ -->
+    <section class="screen" id="screen-year" data-title="时间轴">
+      <header class="screen-header">
+        <button class="btn-back" data-back="screen-archive" type="button">← 档案室</button>
+        <h2 id="year-title">时间轴</h2>
+        <div class="header-actions">
+          <button class="btn-ghost" id="btn-review" type="button">AI 回顾</button>
+          <button class="btn-ghost" id="btn-failure" type="button">失败复盘</button>
+          <button class="btn-ghost" id="btn-new-moment-year" type="button">＋ 记录</button>
+        </div>
+      </header>
+
+      <div class="timeline-entry-wrap">
+        <button class="timeline-entry" id="btn-year-timeline" type="button">
+          <span class="te-icon">◈</span>
+          <span class="te-text"><b id="year-timeline-label">年份时间轴</b><small>用书卷动画查看这一年的完整时间线</small></span>
+          <span class="te-arrow">→</span>
+        </button>
+      </div>
+
+      <div class="filter-bar">
+        <input id="search-input" type="search" placeholder="搜索事件、感受、收获…" autocomplete="off">
+        <div class="tag-chips" id="tag-chips"></div>
+      </div>
+
+      <div class="card-list" id="timeline"></div>
+    </section>
+
+    <!-- ============ 卡片详情 ============ -->
+    <section class="screen" id="screen-detail" data-title="档案卡片">
+      <header class="screen-header">
+        <button class="btn-back" data-back="screen-year" type="button">← 时间轴</button>
+        <h2>档案卡片</h2>
+        <div class="header-actions">
+          <button class="btn-ghost" id="btn-link" type="button">时空连线</button>
+          <button class="btn-ghost" id="btn-edit" type="button">编辑</button>
+          <button class="btn-ghost danger" id="btn-delete" type="button">删除</button>
+        </div>
+      </header>
+      <div class="detail-body" id="detail-body"></div>
+    </section>
+
+    <!-- ============ 记录 / 编辑 ============ -->
+    <section class="screen" id="screen-edit" data-title="记录">
+      <header class="screen-header">
+        <button class="btn-back" data-back="screen-year" type="button">← 返回</button>
+        <h2 id="edit-title">记录此刻</h2>
+        <button class="btn-primary" id="btn-save-moment" type="submit" form="moment-form">保存</button>
+      </header>
+
+      <form class="form-card" id="moment-form" novalidate>
+        <label class="field">
+          <span class="lbl">事件 <em>· 发生了什么</em></span>
+          <textarea id="f-event" rows="3" required placeholder="今天发生了一件什么样的事？"></textarea>
+        </label>
+
+        <div class="field-row">
+          <label class="field">
+            <span class="lbl">日期</span>
+            <input type="date" id="f-date">
+          </label>
+          <label class="field">
+            <span class="lbl">心情</span>
+            <select id="f-mood"></select>
+          </label>
+        </div>
+
+        <div class="field-row">
+          <label class="field">
+            <span class="lbl">类型 <em>· 用于失败复盘统计</em></span>
+            <select id="f-type">
+              <option value="normal">平常</option>
+              <option value="success">成功</option>
+              <option value="setback">挫折</option>
+            </select>
+          </label>
+          <label class="field">
+            <span class="lbl">图片 / 视频 <em>· 最多 3 个，存本机</em></span>
+            <div class="media-picker">
+              <button class="btn-ghost" id="btn-add-media" type="button">＋ 添加图片/视频</button>
+              <input type="file" id="f-media" accept="image/*,video/*" multiple hidden>
+              <div class="media-preview" id="media-preview"></div>
+            </div>
+          </label>
+        </div>
+
+        <label class="field">
+          <span class="lbl">感受 <em>· 当时的想法与情绪</em></span>
+          <textarea id="f-feeling" rows="3" placeholder="那一刻，你的心里在想什么？"></textarea>
+        </label>
+
+        <label class="field">
+          <span class="lbl">收获 <em>· 从中学到了什么</em></span>
+          <textarea id="f-gain" rows="3" placeholder="这件事给你留下了什么？"></textarea>
+        </label>
+
+        <label class="field">
+          <span class="lbl">标签 <em>· 下拉勾选，也可填写自定义标签</em></span>
+          <div class="tag-picker" id="tag-picker">
+            <button class="tag-picker-trigger" id="tag-trigger" type="button">
+              <span id="tag-summary">点击选择标签…</span>
+              <span class="tag-caret">▾</span>
+            </button>
+            <div class="tag-panel" id="tag-panel" hidden>
+              <div class="tag-search"><input id="tag-search" placeholder="搜索标签…" autocomplete="off"></div>
+              <div class="tag-options" id="tag-options"></div>
+              <div class="tag-other">
+                <input id="tag-other-input" placeholder="填写其他标签，用逗号或顿号分隔" autocomplete="off">
+                <button class="btn-ghost" id="tag-other-add" type="button">添加</button>
+              </div>
+            </div>
+          </div>
+          <div class="tag-chosen" id="tag-chosen"></div>
+        </label>
+
+        <label class="ai-toggle">
+          <input type="checkbox" id="f-ai-now">
+          <span class="ai-toggle-track"><span class="ai-toggle-thumb"></span></span>
+          <span class="ai-toggle-text">
+            <b>✨ 保存后自动生成 AI 解读</b>
+            <small>关键词 · 成长分析 · 人生建议</small>
+          </span>
+        </label>
+      </form>
+    </section>
+
+    <!-- ============ 时间胶囊 ============ -->
+    <section class="screen" id="screen-vault" data-title="时间胶囊">
+      <header class="screen-header">
+        <button class="btn-back" data-back="screen-archive" type="button">← 档案室</button>
+        <h2>时间胶囊</h2>
+        <div class="header-actions">
+          <button class="btn-ghost" id="btn-new-letter" type="button">✉ 写信</button>
+        </div>
+      </header>
+      <div class="vault-intro">把此刻的自己装进信封，交给未来的某一天。</div>
+      <div class="letter-list" id="letter-list"></div>
+    </section>
+
+    <!-- ============ 写信 ============ -->
+    <section class="screen" id="screen-letter" data-title="写信">
+      <header class="screen-header">
+        <button class="btn-back" data-back="screen-vault" type="button">← 时间胶囊</button>
+        <h2>写给未来的信</h2>
+        <button class="btn-primary" id="btn-save-letter" type="submit" form="letter-form">密封这封信</button>
+      </header>
+
+      <form class="form-card" id="letter-form" novalidate>
+        <label class="field">
+          <span class="lbl">信的内容</span>
+          <textarea id="f-letter-text" rows="8" required placeholder="想对未来的自己说些什么？"></textarea>
+        </label>
+        <label class="field">
+          <span class="lbl">拆信日期</span>
+          <input type="date" id="f-letter-date">
+        </label>
+        <p class="hint">信密封后无法修改，到拆信日期当天才会解锁。</p>
+      </form>
+    </section>
+
+    <!-- ============ 时空连线 ============ -->
+    <section class="screen" id="screen-link" data-title="时空连线">
+      <header class="screen-header">
+        <button class="btn-back" data-back="screen-detail" type="button">← 返回</button>
+        <h2>时空连线</h2>
+      </header>
+
+      <div class="link-body">
+        <p class="hint">选择两段记忆，让 AI 找出它们之间隐秘的联系。</p>
+        <p class="hint" id="link-count-hint"></p>
+        <label class="field">
+          <span class="lbl">记忆 A</span>
+          <select id="link-a"></select>
+        </label>
+        <label class="field">
+          <span class="lbl">记忆 B</span>
+          <select id="link-b"></select>
+        </label>
+        <button class="btn-primary block" id="btn-link-run" type="button">开始连线</button>
+        <div id="link-result"></div>
+      </div>
+    </section>
+
+    <!-- ============ AI 回顾 ============ -->
+    <section class="screen" id="screen-review" data-title="AI 回顾">
+      <header class="screen-header">
+        <button class="btn-back" data-back="screen-year" type="button">← 返回</button>
+        <h2>AI 回顾</h2>
+      </header>
+
+      <div class="link-body">
+        <p class="hint">选择一个月，让 AI 把散落的记录连成一段成长轨迹。</p>
+        <label class="field">
+          <span class="lbl">月份</span>
+          <input type="month" id="review-month" placeholder="2026-08">
+        </label>
+        <p class="hint">支持原生选择的手机直接选；不支持时请按 YYYY-MM 格式填写。</p>
+        <button class="btn-primary block" id="btn-review-run" type="button">生成回顾</button>
+        <div id="review-result"></div>
+      </div>
+    </section>
+
+    <!-- ============ 失败复盘 ============ -->
+    <section class="screen" id="screen-failure" data-title="失败复盘">
+      <header class="screen-header">
+        <button class="btn-back" data-back="screen-year" type="button">← 返回</button>
+        <h2>失败复盘</h2>
+      </header>
+      <div class="link-body">
+        <p class="hint">统计某月/某年标记为「挫折」的记录：先看分类统计，再让 AI 帮你复盘。</p>
+        <div class="field-row">
+          <label class="field">
+            <span class="lbl">范围</span>
+            <select id="fail-scope">
+              <option value="month">按月</option>
+              <option value="year">按年</option>
+            </select>
+          </label>
+          <label class="field">
+            <span class="lbl">期间</span>
+            <input type="month" id="fail-period-month" placeholder="2026-08">
+            <input type="number" id="fail-period-year" min="2000" max="2100" placeholder="如 2026" hidden>
+          </label>
+        </div>
+        <button class="btn-primary block" id="btn-fail-stats" type="button">生成统计</button>
+        <div id="fail-stats"></div>
+        <button class="btn-primary block" id="btn-fail-ai" type="button">AI 失败复盘</button>
+        <div id="fail-result"></div>
+      </div>
+    </section>
+
+    <!-- ============ 数据管理 ============ -->
+    <section class="screen" id="screen-data" data-title="数据管理">
+      <header class="screen-header">
+        <button class="btn-back" data-back="screen-archive" type="button">← 档案室</button>
+        <h2>数据管理</h2>
+      </header>
+
+      <div class="form-card data-card">
+        <div class="warn-box">
+          <b>⚠️ 数据安全提醒</b>
+          <p>档案、图片/视频和信件保存在<b>你当前浏览器</b>中；只有使用 AI 功能时，你选择分析的文字才会发送给对应的 AI 服务。部分手机浏览器（如华为、小米）的<b>自动清理网页数据</b>功能，可能在无提示的情况下清除站点数据；清除浏览器数据也会删除。请定期使用下方的「导出备份」保存数据。</p>
+        </div>
+
+        <div class="ai-settings-box">
+          <h3>AI 服务</h3>
+          <p>当前使用：<b id="ai-current-provider">正在读取…</b></p>
+          <div class="ai-settings-actions">
+            <button class="btn-ghost" id="btn-ai-settings" type="button">AI 设置</button>
+            <button class="btn-ghost danger" id="btn-clear-deepseek-key" type="button" hidden>清除 DeepSeek Key</button>
+          </div>
+          <p class="hint" id="ai-settings-hint">DeepSeek Key 只保存在当前浏览器中，不随档案备份导出。</p>
+        </div>
+
+        <div class="storage-box">
+          <h3>本地存储用量</h3>
+          <div class="storage-track"><div class="storage-fill" id="storage-fill"></div></div>
+          <p class="hint" id="storage-text">正在计算…</p>
+        </div>
+
+        <h3>导出备份</h3>
+        <p>把所有档案和时间胶囊下载为一个 JSON 文件，妥善保存。</p>
+        <button class="btn-primary block" id="btn-export" type="button">导出备份</button>
+
+        <h3>导入恢复</h3>
+        <p>从备份文件恢复数据。导入会<strong>覆盖</strong>当前全部档案。</p>
+        <button class="btn-primary block" id="btn-import" type="button">选择备份文件</button>
+        <input type="file" id="import-file" accept="application/json,.json" hidden>
+
+        <h3 class="danger-h">清空档案</h3>
+        <p>删除本机保存的全部档案与信件，此操作无法恢复。</p>
+        <button class="btn-danger block" id="btn-clear" type="button">清空所有数据</button>
+
+        <p class="hint">档案与信件不会跨设备同步。使用 AI 时，所选文字会发送给 DeepSeek 或智谱；图片和视频不会发送。</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- 翻书进场 -->
+  <div class="book-overlay" id="book-overlay" hidden aria-hidden="true">
+    <div class="book-scene">
+      <div class="book-beam"></div>
+      <div class="book">
+        <div class="book-block left">
+          <div class="book-sheet s1"></div>
+          <div class="book-sheet s2"></div>
+          <div class="book-sheet s3"></div>
+          <div class="book-sheet s4"></div>
+        </div>
+        <div class="book-block right">
+          <div class="book-sheet s1"></div>
+          <div class="book-sheet s2"></div>
+          <div class="book-sheet s3"></div>
+          <div class="book-sheet s4"></div>
+        </div>
+        <div class="book-edge left"></div>
+        <div class="book-edge right"></div>
+        <div class="book-flip f1"></div>
+        <div class="book-flip f2"></div>
+        <div class="book-flip f3"></div>
+        <div class="book-flip f4"></div>
+        <div class="book-flip f5"></div>
+        <div class="book-flip f6"></div>
+        <div class="book-flip f7"></div>
+        <div class="book-flip f8"></div>
+        <div class="book-flip f9"></div>
+        <div class="book-flip f10"></div>
+        <div class="book-cover-front"></div>
+        <div class="book-glow-base"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 节点跳转穿越 -->
+  <div class="jump-overlay" id="jump-overlay" hidden aria-hidden="true">
+    <div class="jump-ring"></div>
+    <div class="jump-glow"></div>
+  </div>
+
+  <div class="modal-overlay" id="modal-overlay" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <span class="stamp">档案馆提示</span>
+      <h3 id="modal-title">还差一点</h3>
+      <p id="modal-message"></p>
+      <button class="btn-primary" id="modal-ok" type="button">知道了</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="media-warn-overlay" hidden>
+    <div class="modal-card" role="alertdialog" aria-modal="true" aria-labelledby="media-warn-title">
+      <span class="stamp">数据安全提醒</span>
+      <h3 id="media-warn-title">媒体会保存在本机</h3>
+      <p id="media-warn-msg">图片/视频将保存在你当前浏览器的本地存储中。部分手机浏览器（如华为、小米）的<b>自动清理网页数据</b>功能，可能在无提示的情况下清除站点数据，导致媒体丢失。建议定期使用「数据管理 → 导出备份」保存数据。<br><br>要继续上传吗？</p>
+      <div class="modal-actions">
+        <button class="btn-ghost" id="media-warn-cancel" type="button">取消</button>
+        <button class="btn-primary" id="media-warn-ok" type="button">继续上传</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay ai-setup-overlay" id="ai-setup-overlay" hidden>
+    <div class="modal-card ai-setup-card" role="dialog" aria-modal="true" aria-labelledby="ai-setup-title">
+      <button class="ai-setup-close" id="ai-setup-close" type="button" aria-label="关闭 AI 设置" hidden>×</button>
+      <span class="stamp">AI 服务设置</span>
+      <h3 id="ai-setup-title">选择你的 AI 服务</h3>
+      <p class="ai-setup-intro">每次进入档案馆前，请确认本次使用的模型。AI 只接收需要分析的文字，不会接收图片或视频。</p>
+
+      <div class="ai-choice-grid">
+        <section class="ai-choice" id="ai-choice-deepseek">
+          <span class="ai-choice-kicker">路径一</span>
+          <h4>使用自己的 DeepSeek API</h4>
+          <p>使用你账户的额度，结果更稳定。Key 将保存在当前浏览器，并通过本站安全转发。</p>
+          <label class="field">
+            <span class="lbl">DeepSeek API Key</span>
+            <input id="f-deepseek-key" type="password" autocomplete="off" spellcheck="false" placeholder="sk-...">
+          </label>
+          <button class="btn-primary block" id="btn-deepseek-confirm" type="button">确定</button>
+          <small class="ai-key-note">共享设备上请使用后清除 Key。</small>
+        </section>
+
+        <section class="ai-choice" id="ai-choice-builtin">
+          <span class="ai-choice-kicker">路径二</span>
+          <h4>使用档案馆自带模型</h4>
+          <p>无需填写 Key，由本站统一提供智谱 GLM 免费额度。该通道可能限流、超时或暂时不可用。</p>
+          <button class="btn-ghost ai-builtin-button" id="btn-use-builtin" type="button">使用自带模型（不稳定）</button>
+        </section>
+      </div>
+
+      <p class="ai-setup-error" id="ai-setup-error" role="alert" hidden></p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="js/app.js?v=20261024b"></script>
+</body>
+</html>

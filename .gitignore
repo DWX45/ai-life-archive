@@ -1,0 +1,7 @@
+.netlify/
+.env
+.dev.vars
+.wrangler/
+.DS_Store
+node_modules/
+投稿说明.txt
